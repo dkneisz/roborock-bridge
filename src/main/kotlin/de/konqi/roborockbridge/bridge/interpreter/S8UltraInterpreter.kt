@@ -13,7 +13,7 @@ class S8UltraInterpreter : SchemaValueInterpreter {
         get() = "S8 Ultra Interpreter"
 
     override val modelNames: Set<String>
-        get() = setOf("roborock.vacuum.a70")
+        get() = setOf("roborock.vacuum.a70","roborock.vacuum.a117")
 
     override fun interpret(code: String, value: Int): String? {
         if (ENUM_LIKE_PROPERTIES_MAP.containsKey(code)) {
