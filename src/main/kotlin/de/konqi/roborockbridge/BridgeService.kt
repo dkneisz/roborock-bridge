@@ -85,7 +85,7 @@ class BridgeService(
         bridgeMqtt.announceRoutines(schemas.map(SchemaForPublish::fromSchemaEntity))
     }
 
-    @Scheduled(fixedDelay = 10_000)
+    @Scheduled(fixedDelay = 10000)
     fun mqttStatusPoll() {
         // Clear stale messages and set associated devices to state unreachable
         requestMemory.clearMessagesOlderThan(5000).map { it.first }.toSet().forEach { deviceId ->
@@ -101,7 +101,7 @@ class BridgeService(
             }
     }
 
-    @Scheduled(fixedDelay = 5 * 90_000)
+    @Scheduled(fixedDelay = 5 * 90000)
     fun restStatusPoll() {
         dataAccessLayer.getHomes().forEach { home ->
             val devices = dataAccessLayer.saveDevices(userApi.getUserHome(home.homeId), home)
@@ -165,12 +165,13 @@ class BridgeService(
                     if (payload.result != null) {
                         if (payload.method == RequestMethod.GET_PROP) {
                             val notifyAboutChangesAfter = Date()
+                            logger.info("payload: ${payload}")
                             val result = cast<Array<GetPropGetStatusResponse>>(payload.result).first()
                             dataAccessLayer.updateDeviceStates(message.deviceId, result.states)
                             bridgeDeviceStateManager.updateDeviceState(message.deviceId, result.states)
 
                             // notify
-                            publishDeviceStatus(message.deviceId, notifyAboutChangesAfter)
+                            publishDeviceStatus(message.deviceId)
                         } else if (payload.method == RequestMethod.GET_CONSUMABLE) {
                             val notifyAboutChangesAfter = Date()
                             val result = cast<Array<GetConsumableResponse>>(payload.result).first()
@@ -178,7 +179,7 @@ class BridgeService(
                             bridgeDeviceStateManager.updateDeviceState(message.deviceId, result.states)
 
                             // notify
-                            publishDeviceStatus(message.deviceId, notifyAboutChangesAfter)
+                            publishDeviceStatus(message.deviceId)
                         } else if (payload.method == RequestMethod.GET_ROOM_MAPPING) {
                             val result = cast<Array<RoomMapping>>(payload.result)
                             val homeId = dataAccessLayer.getDevice(message.deviceId).get().home.homeId

@@ -97,7 +97,7 @@ class RoborockMqtt(
     val isAlive = AtomicBoolean(true)
     val isConnected get() = ::mqttClient.isInitialized && mqttClient.isConnected
 
-    @Scheduled(fixedDelay = 30_000)
+    @Scheduled(fixedDelay = 30000)
     private fun aliveCheck() {
         if (isAlive.get()) {
             isAlive.set(false)
