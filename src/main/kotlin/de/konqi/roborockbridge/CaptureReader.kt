@@ -151,7 +151,7 @@ class CaptureReader(
                 JsonFactory().createParser(it).use { jsonParser ->
                     var topic = ""
                     while (null != jsonParser.nextToken()) {
-                        val fieldName = jsonParser.currentName
+                        val fieldName = jsonParser.currentName()
                         if (fieldName == "mqtt.topic") {
                             jsonParser.nextToken()
                             topic = jsonParser.text
